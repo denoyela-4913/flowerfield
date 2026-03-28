@@ -1,9 +1,11 @@
 pub fn annotate(garden: &[&str]) -> Vec<String> {
     // todo!(
     //    "\nAnnotate each square of the given garden with the number of flowers that surround said square (blank if there are no surrounding flowers):\n{garden:#?}\n"
-    for i in 0 .. garden.len() { 
+    
+    // DEBUG : print the input garden
+    /* for i in 0 .. garden.len() { 
         println! ("{}", garden[i])
-    };
+    }; */
     
     let mut copyvec : Vec::<String> = Vec::new();
     let mut cur : String = String::new();
@@ -23,7 +25,11 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
             if cur.chars().nth(cur_pos) == Some('*') {
                 
                 // No change on cur_pos when a flower is found
-                println! ("star found at row {}, cur_pos = {}", i, cur_pos);
+
+                // DEBUG : print row and cur_pos when a flower is found
+                // println! ("star found at row {}, cur_pos = {}", i, cur_pos);
+
+                continue;
 
             } else if cur.chars().nth(cur_pos) == Some(' ') {
                 if cur_pos > 0 {
@@ -39,55 +45,30 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
                 if ! prev.is_empty() && prev.chars().nth(cur_pos) == Some('*') {nb_neighbor += 1;}
                 if ! next.is_empty() && next.chars().nth(cur_pos) == Some('*') {nb_neighbor += 1;}
                 if nb_neighbor == 0 {
-                    
-                    println! ("no neighbor found at row {}, cur_pos = {}", i, cur_pos);
+
+                    // No neighbor found, but we should not replace the char in cur string with '0', 
+                    // we should keep it as ' ' (blank)
+
+                    // DEBUG : print row and cur_pos when no neighbor is found
+                    // println! ("No neighbor found at row {}, cur_pos = {}", i, cur_pos);
+
+                    continue;
                 }
                 else {
-                    println! ("row = {} | cur_pos = {} | nb_neighbor = {}", i, cur_pos, nb_neighbor);
+                    // DEBUG: print row, cur_pos and the number of neighbor found
+                    // println! ("row = {} | cur_pos = {} | nb_neighbor = {}", i, cur_pos, nb_neighbor);
                     
-                    // Solution 1: using format! macro
-                    // let begin : String = cur[0..cur_pos].into();
-                    // let end   : String = cur[cur_pos+1..].into();
-                    //cur = format!("{}{}{}", begin, nb_neighbor, end);
-
-                    // Solution 2: using push_str method
-                    //let mut curtmp: String;
-                    // curtmp.push_str(&cur[0..cur_pos]);
-                    // curtmp.push_str(nb_neighbor.to_string().as_str());
-                    // curtmp.push_str(&cur[cur_pos+1..]);
-                    // cur = curtmp;
-
-                    // Solution 3: using '+' method
-                    //let curtmp: String;
-                    //curtmp = cur[0..cur_pos].to_string() + nb_neighbor.to_string().as_str() + &cur[cur_pos+1..];
-                    //cur = curtmp;
-
-                    // Solution 4: using replace_range method
-                    // let mut curtmp = cur.clone();
-                    // curtmp.replace_range(cur_pos..cur_pos+1, nb_neighbor.to_string().as_str());
-                    // cur = curtmp;
-
-                    // Solution 5: 4 using cur variable
-                    // cur.replace_range(cur_pos..cur_pos+1, nb_neighbor.to_string().as_str());
-
-                    // Solution 6: 3 using cur variable
-                    // cur = cur[0..cur_pos].to_string() + &nb_neighbor.to_string() + &cur[cur_pos+1..];
-
-                    // Solution 7 : 2 bis: using push_str method
-                    // let mut curtmp: String = Default::default();
-                    // curtmp.push_str(&cur[0..cur_pos]);
-                    // curtmp.push_str(&nb_neighbor.to_string());
-                    // curtmp.push_str(&cur[cur_pos+1..]);
-                    // cur = curtmp;
-
-                    // Choosen solution = 5 (More elegant, replacing only 1 char in cur string) + use '&' instead of 'as_str()'
+                    // Neighbor found, we should replace the char in cur string with the number of neighbor found
+                    // Choosen solution = More elegant, replacing only 1 char in cur string + use '&' instead of 'as_str()'
                     cur.replace_range(cur_pos..cur_pos+1, &nb_neighbor.to_string());
-                }
-            }
+                } // if nb_neighbor == 0
+            } // if cur.chars().nth(cur_pos) == Some('*') - else if cur.chars().nth(cur_pos) == Some(' ')
         } // for loop on cur_pos
 
         copyvec.push(cur.clone());
-        println! ("prev = {}|cur = {}|next = {}|", prev, cur, next);
+
+        // DEBUG: Print the current state of cur, prev and next strings
+        // println! ("prev = {}|cur = {}|next = {}|", prev, cur, next);
         
     }; // for loop on garden[i]
     
@@ -96,7 +77,7 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
 
 fn main() {
     println!("Hello, world! flower field");
-    #[rustfmt::skip]
+    
     let (input, expected) = (&[
     "  *  ",
     "  *  ",
@@ -111,5 +92,6 @@ fn main() {
     " 2*2 ",
     ]);
     let actual = annotate(input);
+    // Do 1 test to check algorithm correctness
     assert_eq!(actual, expected);
 }
