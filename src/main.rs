@@ -45,9 +45,43 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
                 else {
                     println! ("row = {} | cur_pos = {} | nb_neighbor = {}", i, cur_pos, nb_neighbor);
                     
-                    let begin : String = cur[0..cur_pos].into();
-                    let end : String = cur[cur_pos+1..].into();
-                    cur = format!("{}{}{}", begin, nb_neighbor, end);
+                    // Solution 1: using format! macro
+                    // let begin : String = cur[0..cur_pos].into();
+                    // let end   : String = cur[cur_pos+1..].into();
+                    //cur = format!("{}{}{}", begin, nb_neighbor, end);
+
+                    // Solution 2: using push_str method
+                    //let mut curtmp: String;
+                    // curtmp.push_str(&cur[0..cur_pos]);
+                    // curtmp.push_str(nb_neighbor.to_string().as_str());
+                    // curtmp.push_str(&cur[cur_pos+1..]);
+                    // cur = curtmp;
+
+                    // Solution 3: using '+' method
+                    //let curtmp: String;
+                    //curtmp = cur[0..cur_pos].to_string() + nb_neighbor.to_string().as_str() + &cur[cur_pos+1..];
+                    //cur = curtmp;
+
+                    // Solution 4: using replace_range method
+                    // let mut curtmp = cur.clone();
+                    // curtmp.replace_range(cur_pos..cur_pos+1, nb_neighbor.to_string().as_str());
+                    // cur = curtmp;
+
+                    // Solution 5: 4 using cur variable
+                    // cur.replace_range(cur_pos..cur_pos+1, nb_neighbor.to_string().as_str());
+
+                    // Solution 6: 3 using cur variable
+                    // cur = cur[0..cur_pos].to_string() + &nb_neighbor.to_string() + &cur[cur_pos+1..];
+
+                    // Solution 7 : 2 bis: using push_str method
+                    // let mut curtmp: String = Default::default();
+                    // curtmp.push_str(&cur[0..cur_pos]);
+                    // curtmp.push_str(&nb_neighbor.to_string());
+                    // curtmp.push_str(&cur[cur_pos+1..]);
+                    // cur = curtmp;
+
+                    // Choosen solution = 5 (More elegant, replacing only 1 char in cur string) + use '&' instead of 'as_str()'
+                    cur.replace_range(cur_pos..cur_pos+1, &nb_neighbor.to_string());
                 }
             }
         } // for loop on cur_pos
